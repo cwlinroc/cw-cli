@@ -23,6 +23,7 @@ cmd/
   lf.go                       LF/CRLF conversion utilities
   utf8.go                     UTF-8 conversion utilities
   ss.go                       Clipboard screenshot save command (!linux only)
+  timer.go                    Countdown timer with live TUI (bubbletea + bubbles/timer)
 internal/
   file/
     direct.go                 Interactive directory picker
@@ -96,9 +97,12 @@ go run . utf8 --help
 go run . lf --help
 go run . crlf --help
 go run . ss
+go run . timer 5s
+go run . timer 1hr30min
 ```
 
 - `cmd/ss.go` is guarded by `//go:build !linux`.
+- `cw timer` supports units: s/sec, m/min, h/hr, and compounds like "1h30m".
 
 ## Architecture Notes
 
