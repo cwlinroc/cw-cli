@@ -38,7 +38,7 @@ func GenerateCs(targetDirect string, fileName string) error {
 var cs_Template string = `namespace %s;
 public class %s
 {
-	
+
 }`
 
 func cs_namespace(targetDirect string) (nameSpace string, err error) {
