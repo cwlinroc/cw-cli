@@ -4,9 +4,10 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
+
 	"cw/internal/file"
 	"cw/internal/template"
-	"fmt"
 
 	"github.com/spf13/cobra"
 )
@@ -36,23 +37,19 @@ var addCsCmd = &cobra.Command{
 }
 
 func addCsCmdRun(cmd *cobra.Command, args []string) {
-
 	targetDirect, err := file.PickDir(huhTheme)
-
 	if err != nil {
 		fmt.Println("Error getting direct: ", err)
 		return
 	}
 
 	fileName, err := file.GetName(args, huhTheme)
-
 	if err != nil {
 		fmt.Println("Error getting file name: ", err)
 		return
 	}
 
 	err = template.GenerateCs(targetDirect, fileName)
-
 	if err != nil {
 		fmt.Println("Error generating class: ", err)
 		return
@@ -67,23 +64,19 @@ var addRazorCmd = &cobra.Command{
 }
 
 func addRazorCmdRun(cmd *cobra.Command, args []string) {
-
 	targetDirect, err := file.PickDir(huhTheme)
-
 	if err != nil {
 		fmt.Println("Error getting direct: ", err)
 		return
 	}
 
 	fileName, err := file.GetName(args, huhTheme)
-
 	if err != nil {
 		fmt.Println("Error getting file name: ", err)
 		return
 	}
 
 	err = template.GenerateRazor(targetDirect, fileName)
-
 	if err != nil {
 		fmt.Println("Error generating razor page: ", err)
 		return
@@ -98,23 +91,19 @@ var addCodeCmd = &cobra.Command{
 }
 
 func addCodeCmdRun(cmd *cobra.Command, args []string) {
-
 	targetDirect, err := file.PickDir(huhTheme)
-
 	if err != nil {
 		fmt.Println("Error getting direct: ", err)
 		return
 	}
 
 	fileName, err := file.GetName(args, huhTheme)
-
 	if err != nil {
 		fmt.Println("Error getting file name: ", err)
 		return
 	}
 
 	err = template.GenerateCode(targetDirect, fileName)
-
 	if err != nil {
 		fmt.Println("Error generating code workspace: ", err)
 		return
@@ -129,16 +118,13 @@ var addPageCmd = &cobra.Command{
 }
 
 func addPageCmdRun(cmd *cobra.Command, args []string) {
-
 	targetDirect, err := file.PickDir(huhTheme)
-
 	if err != nil {
 		fmt.Println("Error getting direct: ", err)
 		return
 	}
 
 	err = template.GeneratePage(targetDirect)
-
 	if err != nil {
 		fmt.Println("Error generating page: ", err)
 		return
@@ -154,14 +140,12 @@ var addEditorConfigCmd = &cobra.Command{
 
 func addEditorConfigCmdRun(cmd *cobra.Command, args []string) {
 	targetDirect, err := file.PickDir(huhTheme)
-
 	if err != nil {
 		fmt.Println("Error getting direct: ", err)
 		return
 	}
 
 	err = template.GenerateEditorConfig(targetDirect)
-
 	if err != nil {
 		fmt.Println("Error generating .editorconfig file: ", err)
 		return

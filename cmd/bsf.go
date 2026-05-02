@@ -43,7 +43,6 @@ func format(str string) string {
 	quotedStr := fmt.Sprintf("\"%s\"", str)
 
 	utf8Str, err := strconv.Unquote(quotedStr)
-
 	if err != nil {
 		return "Failed to unquote string"
 	}
@@ -56,7 +55,6 @@ func toEscape(char rune) string {
 }
 
 func fromEscaped(chars []rune) string {
-
 	target := chars[1:]
 
 	if len(target) != 4 {
@@ -82,15 +80,15 @@ func fromEscaped(chars []rune) string {
 
 		fmt.Println(hex)
 
-		switch {
-		case i == 0:
+		switch i {
+		case 0:
 			bytes[0] = byte(hex | 0xe0)
-		case i == 1:
+		case 1:
 			bytes[1] = byte(hex<<2 | 0x80)
-		case i == 2:
+		case 2:
 			bytes[1] |= byte(hex >> 2)
 			bytes[2] = byte(((hex & 0x03) << 4) | 0x80)
-		case i == 3:
+		case 3:
 			bytes[2] |= byte(hex)
 		}
 
@@ -98,5 +96,4 @@ func fromEscaped(chars []rune) string {
 	}
 
 	return string(bytes[:])
-
 }

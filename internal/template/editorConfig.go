@@ -7,17 +7,10 @@ import (
 )
 
 func GenerateEditorConfig(targetDirect string) error {
-
-	file, err := os.Create(filepath.Join(targetDirect, ".editorconfig"))
-
+	err := os.WriteFile(filepath.Join(targetDirect, ".editorconfig"), []byte(editorConfig_Template), 0o644)
 	if err != nil {
-		fmt.Println("Error creating file: ", err)
-		return err
+		return fmt.Errorf("write editorconfig: %w", err)
 	}
-
-	defer file.Close()
-
-	file.WriteString(editorConfig_Template)
 
 	return nil
 }

@@ -4,10 +4,11 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"cw/internal/file"
-	"cw/internal/template"
 	"fmt"
 	"os"
+
+	"cw/internal/file"
+	"cw/internal/template"
 
 	"github.com/spf13/cobra"
 )
@@ -39,23 +40,19 @@ var touchCsCmd = &cobra.Command{
 }
 
 func touchCsCmdRun(cmd *cobra.Command, args []string) {
-
 	targetDirect, err := os.Getwd()
-
 	if err != nil {
 		fmt.Println("Error getting direct: ", err)
 		return
 	}
 
 	fileName, err := file.GetName(args, huhTheme)
-
 	if err != nil {
 		fmt.Println("Error getting file name: ", err)
 		return
 	}
 
 	err = template.GenerateCs(targetDirect, fileName)
-
 	if err != nil {
 		fmt.Println("Error generating class: ", err)
 		return
@@ -71,23 +68,19 @@ var touchRazorCmd = &cobra.Command{
 }
 
 func touchRazorCmdRun(cmd *cobra.Command, args []string) {
-
 	targetDirect, err := os.Getwd()
-
 	if err != nil {
 		fmt.Println("Error getting direct: ", err)
 		return
 	}
 
 	fileName, err := file.GetName(args, huhTheme)
-
 	if err != nil {
 		fmt.Println("Error getting file name: ", err)
 		return
 	}
 
 	err = template.GenerateRazor(targetDirect, fileName)
-
 	if err != nil {
 		fmt.Println("Error generating razor page: ", err)
 		return
@@ -102,23 +95,19 @@ var touchCodeCmd = &cobra.Command{
 }
 
 func touchCodeCmdRun(cmd *cobra.Command, args []string) {
-
 	targetDirect, err := os.Getwd()
-
 	if err != nil {
 		fmt.Println("Error getting direct: ", err)
 		return
 	}
 
 	fileName, err := file.GetName(args, huhTheme)
-
 	if err != nil {
 		fmt.Println("Error getting file name: ", err)
 		return
 	}
 
 	err = template.GenerateCode(targetDirect, fileName)
-
 	if err != nil {
 		fmt.Println("Error generating code workspace: ", err)
 		return
@@ -133,16 +122,13 @@ var touchPageCmd = &cobra.Command{
 }
 
 func touchPageCmdRun(cmd *cobra.Command, args []string) {
-
 	targetDirect, err := os.Getwd()
-
 	if err != nil {
 		fmt.Println("Error getting direct: ", err)
 		return
 	}
 
 	err = template.GeneratePage(targetDirect)
-
 	if err != nil {
 		fmt.Println("Error generating page: ", err)
 		return
@@ -157,16 +143,13 @@ var touchEditorConfigCmd = &cobra.Command{
 }
 
 func touchEditorConfigCmdRun(cmd *cobra.Command, args []string) {
-
 	targetDirect, err := os.Getwd()
-
 	if err != nil {
 		fmt.Println("Error getting direct: ", err)
 		return
 	}
 
 	err = template.GenerateEditorConfig(targetDirect)
-
 	if err != nil {
 		fmt.Println("Error generating editorconfig: ", err)
 		return

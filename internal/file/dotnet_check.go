@@ -16,7 +16,6 @@ func ExtractCSNamespace(targetDirect string) (nameSpace string, err error) {
 OuterLoop:
 	for range 50 {
 		items, err := os.ReadDir(dir)
-
 		if err != nil {
 			return "", errors.New("Error reading directory " + err.Error())
 		}
@@ -44,5 +43,4 @@ OuterLoop:
 
 	slices.Reverse(names)
 	return strings.Join(names, "."), nil
-
 }

@@ -39,9 +39,7 @@ var crlfCmd = &cobra.Command{
 //------------------------------------------------------------
 
 func lfCmdRun(cmd *cobra.Command, args []string) {
-
 	all, err := cmd.Flags().GetBool("all")
-
 	if err != nil {
 		fmt.Println("Error getting all flag: ", err)
 		return
@@ -53,11 +51,10 @@ func lfCmdRun(cmd *cobra.Command, args []string) {
 	}
 
 	if all {
-		spinner.New().
+		err = spinner.New().
 			Title("Converting all files to LF").
 			Action(func() {
 				files, err := getAllProgramFiles()
-
 				if err != nil {
 					fmt.Println(err)
 					return
@@ -65,7 +62,6 @@ func lfCmdRun(cmd *cobra.Command, args []string) {
 
 				for _, file := range files {
 					err = fileToLf(file)
-
 					if err != nil {
 						fmt.Println(err)
 						return
@@ -73,6 +69,9 @@ func lfCmdRun(cmd *cobra.Command, args []string) {
 				}
 			}).
 			Run()
+		if err != nil {
+			fmt.Println("Error running spinner: ", err)
+		}
 
 		return
 	}
@@ -80,7 +79,6 @@ func lfCmdRun(cmd *cobra.Command, args []string) {
 	path := args[0]
 
 	err = fileToLf(path)
-
 	if err != nil {
 		fmt.Println("Error converting encoding: ", err)
 		return
@@ -88,9 +86,7 @@ func lfCmdRun(cmd *cobra.Command, args []string) {
 }
 
 func crlfCmdRun(cmd *cobra.Command, args []string) {
-
 	all, err := cmd.Flags().GetBool("all")
-
 	if err != nil {
 		fmt.Println("Error getting all flag: ", err)
 		return
@@ -102,11 +98,10 @@ func crlfCmdRun(cmd *cobra.Command, args []string) {
 	}
 
 	if all {
-		spinner.New().
+		err = spinner.New().
 			Title("Converting all files to CRLF").
 			Action(func() {
 				files, err := getAllProgramFiles()
-
 				if err != nil {
 					fmt.Println(err)
 					return
@@ -114,7 +109,6 @@ func crlfCmdRun(cmd *cobra.Command, args []string) {
 
 				for _, file := range files {
 					err = fileToCrlf(file)
-
 					if err != nil {
 						fmt.Println(err)
 						return
@@ -122,6 +116,9 @@ func crlfCmdRun(cmd *cobra.Command, args []string) {
 				}
 			}).
 			Run()
+		if err != nil {
+			fmt.Println("Error running spinner: ", err)
+		}
 
 		return
 	}
@@ -129,7 +126,6 @@ func crlfCmdRun(cmd *cobra.Command, args []string) {
 	path := args[0]
 
 	err = fileToCrlf(path)
-
 	if err != nil {
 		fmt.Println("Error converting encoding: ", err)
 		return
@@ -138,14 +134,12 @@ func crlfCmdRun(cmd *cobra.Command, args []string) {
 
 func fileToLf(file string) error {
 	source, err := os.ReadFile(file)
-
 	if err != nil {
 		return err
 	}
 
 	source = crlf_to_lf(source)
-	err = os.WriteFile(file, source, 0644)
-
+	err = os.WriteFile(file, source, 0o644)
 	if err != nil {
 		return err
 	}
@@ -155,14 +149,12 @@ func fileToLf(file string) error {
 
 func fileToCrlf(file string) error {
 	source, err := os.ReadFile(file)
-
 	if err != nil {
 		return err
 	}
 
 	source = lf_to_crlf(source)
-	err = os.WriteFile(file, source, 0644)
-
+	err = os.WriteFile(file, source, 0o644)
 	if err != nil {
 		return err
 	}
@@ -265,7 +257,6 @@ func get_lf_index(source []byte) []int {
 	}
 
 	return lfIndex
-
 }
 
 func get_crlf_index(source []byte) []int {
@@ -315,7 +306,6 @@ func getAllProgramFiles() ([]string, error) {
 	var files []string
 
 	root, err := os.Getwd()
-
 	if err != nil {
 		return nil, err
 	}

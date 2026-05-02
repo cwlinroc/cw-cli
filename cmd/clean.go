@@ -62,7 +62,6 @@ func cleanCmdRun(cmd *cobra.Command, args []string) {
 
 		return nil
 	})
-
 	if err != nil {
 		fmt.Printf("Error walking directory tree: %v\n", err)
 		return

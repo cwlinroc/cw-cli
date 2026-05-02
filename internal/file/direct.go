@@ -11,7 +11,6 @@ import (
 
 func PickDir(theme *huh.Theme) (targetDirect string, err error) {
 	currentDir, err := os.Getwd()
-
 	if err != nil {
 		return "", errors.New("Error getting current directory " + err.Error())
 	}
@@ -22,7 +21,6 @@ func PickDir(theme *huh.Theme) (targetDirect string, err error) {
 		fmt.Println("Directory: ", dir)
 
 		items, err := os.ReadDir(dir)
-
 		if err != nil {
 			return "", errors.New("Error reading directory " + err.Error())
 		}
@@ -32,7 +30,6 @@ func PickDir(theme *huh.Theme) (targetDirect string, err error) {
 			if v.IsDir() {
 				entryNames = append(entryNames, v.Name())
 			}
-
 		}
 		entryOptions := make([]huh.Option[string], len(entryNames))
 
@@ -58,7 +55,6 @@ func PickDir(theme *huh.Theme) (targetDirect string, err error) {
 			Value(&result).
 			WithTheme(theme).
 			Run()
-
 		if err != nil {
 			return "", errors.New("Error getting directory name " + err.Error())
 		}
@@ -81,15 +77,13 @@ func PickDir(theme *huh.Theme) (targetDirect string, err error) {
 				Value(&newDir).
 				WithTheme(theme).
 				Run()
-
 			if err != nil {
 				return "", errors.New("Error getting new directory name " + err.Error())
 			}
 
 			dir = filepath.Join(dir, newDir)
 
-			err = os.Mkdir(dir, 0755)
-
+			err = os.Mkdir(dir, 0o755)
 			if err != nil {
 				return "", errors.New("Error creating directory " + err.Error())
 			}

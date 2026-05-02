@@ -42,9 +42,7 @@ Usage examples:
 }
 
 func ssCmdRun(cmd *cobra.Command, args []string) {
-
 	err := clipboard.Init()
-
 	if err != nil {
 		fmt.Println("Error accessing clipboard")
 		return
@@ -58,7 +56,6 @@ func ssCmdRun(cmd *cobra.Command, args []string) {
 	}
 
 	targetDirect, err := os.Getwd()
-
 	if err != nil {
 		fmt.Println("Error getting direct: ", err)
 		return
@@ -107,7 +104,6 @@ func ssCmdRun(cmd *cobra.Command, args []string) {
 	}
 
 	fmt.Printf("Screenshot saved as %s.%s\n", fileName, imageType)
-
 }
 
 func saveAsPng(fileName string, targetDirect string, imgBytes []byte) error {
@@ -115,19 +111,23 @@ func saveAsPng(fileName string, targetDirect string, imgBytes []byte) error {
 
 	img, _, err := image.Decode(reader)
 	if err != nil {
-		return fmt.Errorf("failed to decode image: %v", err)
+		return fmt.Errorf("failed to decode image: %w", err)
 	}
 
 	filePath := filepath.Join(targetDirect, fileName+".png")
 	file, err := os.Create(filePath)
 	if err != nil {
-		return fmt.Errorf("failed to create file: %v", err)
+		return fmt.Errorf("failed to create file: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		if closeErr := file.Close(); closeErr != nil && err == nil {
+			err = fmt.Errorf("failed to close file: %w", closeErr)
+		}
+	}()
 
 	err = png.Encode(file, img)
 	if err != nil {
-		return fmt.Errorf("failed to encode PNG: %v", err)
+		return fmt.Errorf("failed to encode PNG: %w", err)
 	}
 
 	return nil
@@ -138,21 +138,25 @@ func saveAsBmp(fileName string, targetDirect string, imgBytes []byte) error {
 
 	img, _, err := image.Decode(reader)
 	if err != nil {
-		return fmt.Errorf("failed to decode image: %v", err)
+		return fmt.Errorf("failed to decode image: %w", err)
 	}
 
 	filePath := filepath.Join(targetDirect, fileName+".bmp")
 	file, err := os.Create(filePath)
 	if err != nil {
-		return fmt.Errorf("failed to create file: %v", err)
+		return fmt.Errorf("failed to create file: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		if closeErr := file.Close(); closeErr != nil && err == nil {
+			err = fmt.Errorf("failed to close file: %w", closeErr)
+		}
+	}()
 
 	// Since Go doesn't have built-in BMP encoder, we'll save as PNG instead
 	// and inform the user
 	err = png.Encode(file, img)
 	if err != nil {
-		return fmt.Errorf("failed to encode image: %v", err)
+		return fmt.Errorf("failed to encode image: %w", err)
 	}
 
 	fmt.Println("Note: BMP format not fully supported, saved as PNG format with .bmp extension")

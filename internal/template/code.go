@@ -7,17 +7,10 @@ import (
 )
 
 func GenerateCode(targetDirect string, fileName string) error {
-
-	file, err := os.Create(filepath.Join(targetDirect, fileName+".code-workspace"))
-
+	err := os.WriteFile(filepath.Join(targetDirect, fileName+".code-workspace"), []byte(code_Template), 0o644)
 	if err != nil {
-		fmt.Println("Error creating file: ", err)
-		return err
+		return fmt.Errorf("write code workspace: %w", err)
 	}
-
-	defer file.Close()
-
-	file.WriteString(code_Template)
 
 	return nil
 }

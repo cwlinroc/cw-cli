@@ -7,21 +7,14 @@ import (
 )
 
 func GeneratePage(targetDirect string) error {
-
 	baseDir := filepath.Base(targetDirect)
-
-	file, err := os.Create(filepath.Join(targetDirect, "+page.svelte"))
-
-	if err != nil {
-		fmt.Println("Error creating file: ", err)
-		return err
-	}
-
-	defer file.Close()
 
 	fileText := fmt.Sprintf(sv_page_Template, baseDir, baseDir)
 
-	file.WriteString(fileText)
+	err := os.WriteFile(filepath.Join(targetDirect, "+page.svelte"), []byte(fileText), 0o644)
+	if err != nil {
+		return fmt.Errorf("write page file: %w", err)
+	}
 
 	return nil
 }

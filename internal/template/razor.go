@@ -1,51 +1,29 @@
 package template
 
 import (
-	"cw/internal/file"
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"cw/internal/file"
 )
 
 func GenerateRazor(targetDirect string, fileName string) error {
-
 	nameSpace, err := file.ExtractCSNamespace(targetDirect)
-
 	if err != nil {
-		fmt.Println("Error getting namespace: ", err)
-		return err
+		return fmt.Errorf("get namespace: %w", err)
 	}
 
-	//create cshtml file
-	{
-		file, err := os.Create(filepath.Join(targetDirect, fileName+".cshtml"))
-
-		if err != nil {
-			fmt.Println("Error creating file: ", err)
-			return err
-		}
-
-		defer file.Close()
-
-		fileText := fmt.Sprintf(cshtml_Template, nameSpace, fileName)
-
-		file.WriteString(fileText)
+	fileText := fmt.Sprintf(cshtml_Template, nameSpace, fileName)
+	err = os.WriteFile(filepath.Join(targetDirect, fileName+".cshtml"), []byte(fileText), 0o644)
+	if err != nil {
+		return fmt.Errorf("write razor view: %w", err)
 	}
 
-	//create cshtml.cs file
-	{
-		file, err := os.Create(filepath.Join(targetDirect, fileName+".cshtml.cs"))
-
-		if err != nil {
-			fmt.Println("Error creating file: ", err)
-			return err
-		}
-
-		defer file.Close()
-
-		fileText := fmt.Sprintf(cshtml_cs_Template, nameSpace, fileName)
-
-		file.WriteString(fileText)
+	fileText = fmt.Sprintf(cshtml_cs_Template, nameSpace, fileName)
+	err = os.WriteFile(filepath.Join(targetDirect, fileName+".cshtml.cs"), []byte(fileText), 0o644)
+	if err != nil {
+		return fmt.Errorf("write razor code-behind: %w", err)
 	}
 
 	return nil

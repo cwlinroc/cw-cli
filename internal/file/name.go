@@ -16,7 +16,6 @@ func GetName(args []string, theme *huh.Theme) (string, error) {
 		fileName = args[0]
 	} else {
 		fileName, err = promptName(theme)
-
 		if err != nil {
 			return "", errors.New("Error getting file name: " + err.Error())
 		}
@@ -25,14 +24,13 @@ func GetName(args []string, theme *huh.Theme) (string, error) {
 	fileName = strings.TrimSpace(fileName)
 
 	if fileName == "" {
-		return "", errors.New("File name cannot be empty")
+		return "", errors.New("file name cannot be empty")
 	}
 
 	return fileName, nil
 }
 
 func promptName(theme *huh.Theme) (fileName string, err error) {
-
 	var _fileName string
 
 	// get file name with huh prompt
@@ -44,7 +42,6 @@ func promptName(theme *huh.Theme) (fileName string, err error) {
 				Value(&_fileName).
 				WithTheme(theme).
 				Run()
-
 			if err != nil {
 				return "", errors.New("Error getting file name " + err.Error())
 			}

@@ -1,42 +1,34 @@
 package template
 
 import (
-	"cw/internal/file"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"cw/internal/file"
 )
 
 func GenerateCs(targetDirect string, fileName string) error {
-
 	if len(fileName) > 3 && fileName[len(fileName)-3:] == ".cs" {
 		fileName = fileName[:len(fileName)-3]
 	}
 
 	if fileName == "" {
-		return errors.New("File name cannot be empty")
+		return errors.New("file name cannot be empty")
 	}
 
 	nameSpace, err := file.ExtractCSNamespace(targetDirect)
-
 	if err != nil {
-		fmt.Println("Error getting namespace: ", err)
-		return err
+		return fmt.Errorf("get namespace: %w", err)
 	}
-
-	file, err := os.Create(filepath.Join(targetDirect, fileName+".cs"))
-
-	if err != nil {
-		fmt.Println("Error creating file: ", err)
-		return err
-	}
-
-	defer file.Close()
 
 	fileText := fmt.Sprintf(cs_Template, nameSpace, fileName)
 
-	file.WriteString(fileText)
+	err = os.WriteFile(filepath.Join(targetDirect, fileName+".cs"), []byte(fileText), 0o644)
+	if err != nil {
+		return fmt.Errorf("write class file: %w", err)
+	}
 
 	return nil
 }
