@@ -1,18 +1,24 @@
 package template
 
 import (
+	"cw/internal/file"
 	"errors"
 	"fmt"
 	"os"
-	"path"
 	"path/filepath"
-	"slices"
-	"strings"
 )
 
 func GenerateCs(targetDirect string, fileName string) error {
 
-	nameSpace, err := cs_namespace(targetDirect)
+	if len(fileName) > 3 && fileName[len(fileName)-3:] == ".cs" {
+		fileName = fileName[:len(fileName)-3]
+	}
+
+	if fileName == "" {
+		return errors.New("File name cannot be empty")
+	}
+
+	nameSpace, err := file.ExtractCSNamespace(targetDirect)
 
 	if err != nil {
 		fmt.Println("Error getting namespace: ", err)
@@ -40,41 +46,3 @@ public class %s
 {
 
 }`
-
-func cs_namespace(targetDirect string) (nameSpace string, err error) {
-	var names []string
-	dir := targetDirect
-
-OuterLoop:
-	for i := 0; i < 50; i++ {
-		items, err := os.ReadDir(dir)
-
-		if err != nil {
-			return "", errors.New("Error reading directory " + err.Error())
-		}
-
-		for _, item := range items {
-			if path.Ext(item.Name()) == ".csproj" {
-				names = append(names, strings.TrimSuffix(item.Name(), ".csproj"))
-				break OuterLoop
-			}
-		}
-
-		baseDir := filepath.Base(dir)
-
-		if baseDir == "" || baseDir == "/" || baseDir == "\\" {
-			break
-		}
-
-		names = append(names, baseDir)
-		dir = filepath.Dir(dir)
-	}
-
-	// for i, j := 0, len(names)-1; i < j; i, j = i+1, j-1 {
-	// 	names[i], names[j] = names[j], names[i]
-	// }
-
-	slices.Reverse(names)
-	return strings.Join(names, "."), nil
-
-}

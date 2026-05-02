@@ -54,10 +54,6 @@ func touchCsCmdRun(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	if len(fileName) > 3 && fileName[len(fileName)-3:] == ".cs" {
-		fileName = fileName[:len(fileName)-3]
-	}
-
 	err = template.GenerateCs(targetDirect, fileName)
 
 	if err != nil {

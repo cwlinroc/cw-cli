@@ -1,6 +1,7 @@
 package template
 
 import (
+	"cw/internal/file"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -8,7 +9,7 @@ import (
 
 func GenerateRazor(targetDirect string, fileName string) error {
 
-	nameSpace, err := cs_namespace(targetDirect)
+	nameSpace, err := file.ExtractCSNamespace(targetDirect)
 
 	if err != nil {
 		fmt.Println("Error getting namespace: ", err)
