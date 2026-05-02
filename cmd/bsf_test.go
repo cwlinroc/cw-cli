@@ -33,6 +33,11 @@ func Test_fromEscaped(t *testing.T) {
 			string(rune(0xf240)),
 		},
 		{
+			"valid u0041 (A)",
+			[]rune{'u', '0', '0', '4', '1'},
+			"A",
+		},
+		{
 			"valid uppercase hex",
 			[]rune{'u', 'F', '2', '4', '0'},
 			string(rune(0xf240)),

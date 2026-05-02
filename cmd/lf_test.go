@@ -5,27 +5,6 @@ import (
 	"testing"
 )
 
-func Test_utf8_len(t *testing.T) {
-	tests := []struct {
-		b    byte
-		want int
-	}{
-		{0x00, 1},
-		{0x7F, 1},
-		{0x80, 2},
-		{0xDF, 2},
-		{0xE0, 3},
-		{0xEF, 3},
-		{0xF0, 4},
-		{0xFF, 4},
-	}
-	for _, tt := range tests {
-		if got := utf8_len(tt.b); got != tt.want {
-			t.Errorf("utf8_len(0x%02x) = %d, want %d", tt.b, got, tt.want)
-		}
-	}
-}
-
 func Test_get_lf_index(t *testing.T) {
 	tests := []struct {
 		name  string

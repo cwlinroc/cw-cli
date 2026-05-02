@@ -61,39 +61,10 @@ func fromEscaped(chars []rune) string {
 		return "Invalid hexadecimal character"
 	}
 
-	var bytes [3]byte
-
-	fmt.Printf("%08b\n", bytes)
-
-	for i, c := range target {
-		var hex int
-		switch {
-		case c >= '0' && c <= '9':
-			hex = int(c - '0')
-		case c >= 'a' && c <= 'f':
-			hex = int(c - 'a' + 10)
-		case c >= 'A' && c <= 'F':
-			hex = int(c - 'A' + 10)
-		default:
-			return "Invalid format"
-		}
-
-		fmt.Println(hex)
-
-		switch i {
-		case 0:
-			bytes[0] = byte(hex | 0xe0)
-		case 1:
-			bytes[1] = byte(hex<<2 | 0x80)
-		case 2:
-			bytes[1] |= byte(hex >> 2)
-			bytes[2] = byte(((hex & 0x03) << 4) | 0x80)
-		case 3:
-			bytes[2] |= byte(hex)
-		}
-
-		fmt.Printf("%08b\n", bytes)
+	codePoint, err := strconv.ParseInt(string(target), 16, 32)
+	if err != nil {
+		return "Invalid format"
 	}
 
-	return string(bytes[:])
+	return string(rune(codePoint))
 }

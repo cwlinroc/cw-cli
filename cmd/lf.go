@@ -234,16 +234,7 @@ func get_lf_index(source []byte) []int {
 
 	cr := false
 
-	for i := 0; i < sourceLen; i++ {
-
-		len := utf8_len(source[i])
-
-		if len > 1 {
-			i += len - 1
-			cr = false
-			continue
-		}
-
+	for i := range sourceLen {
 		if source[i] == '\r' {
 			cr = true
 			continue
@@ -269,35 +260,15 @@ func get_crlf_index(source []byte) []int {
 	crlfIndex := make([]int, 0, 10)
 
 	for i := 0; i < sourceLen; i++ {
-
-		len := utf8_len(source[i])
-
-		if len > 1 {
-			i += len - 1
-			continue
-		}
-
 		if source[i] == '\r' {
 			if i+1 < sourceLen && source[i+1] == '\n' {
 				crlfIndex = append(crlfIndex, i)
+				i++
 			}
-			i++
 		}
 	}
 
 	return crlfIndex
-}
-
-func utf8_len(b byte) int {
-	if b < 0x80 {
-		return 1
-	} else if b < 0xE0 {
-		return 2
-	} else if b < 0xF0 {
-		return 3
-	} else {
-		return 4
-	}
 }
 
 //------------------------------------------------------------
