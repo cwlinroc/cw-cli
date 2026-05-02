@@ -46,4 +46,4 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-var hunTheme = huh.ThemeBase16()
+var huhTheme = huh.ThemeBase16()

@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"cw/internal/file"
 	"cw/internal/template"
 	"fmt"
 	"os"
@@ -46,17 +47,11 @@ func touchCsCmdRun(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	var fileName string
+	fileName, err := file.GetName(args, huhTheme)
 
-	if len(args) > 0 && args[0] != "" {
-		fileName = args[0]
-	} else {
-		fileName, err = getFileName()
-
-		if err != nil {
-			fmt.Println("Error getting file name: ", err)
-			return
-		}
+	if err != nil {
+		fmt.Println("Error getting file name: ", err)
+		return
 	}
 
 	if len(fileName) > 3 && fileName[len(fileName)-3:] == ".cs" {
@@ -88,17 +83,7 @@ func touchRazorCmdRun(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	var fileName string
-
-	if len(args) > 0 && args[0] != "" {
-		fileName = args[0]
-	} else {
-		fileName, err = getFileName()
-		if err != nil {
-			fmt.Println("Error getting file name: ", err)
-			return
-		}
-	}
+	fileName, err := file.GetName(args, huhTheme)
 
 	if err != nil {
 		fmt.Println("Error getting file name: ", err)
@@ -129,7 +114,7 @@ func touchCodeCmdRun(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	fileName, err := getFileName()
+	fileName, err := file.GetName(args, huhTheme)
 
 	if err != nil {
 		fmt.Println("Error getting file name: ", err)

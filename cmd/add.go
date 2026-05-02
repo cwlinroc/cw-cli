@@ -4,14 +4,10 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"cw/internal/file"
 	"cw/internal/template"
-	"errors"
 	"fmt"
-	"os"
-	"path/filepath"
-	"strings"
 
-	"github.com/charmbracelet/huh"
 	"github.com/spf13/cobra"
 )
 
@@ -41,14 +37,14 @@ var addCsCmd = &cobra.Command{
 
 func addCsCmdRun(cmd *cobra.Command, args []string) {
 
-	targetDirect, err := getTargetDirect()
+	targetDirect, err := file.PickDir(huhTheme)
 
 	if err != nil {
 		fmt.Println("Error getting direct: ", err)
 		return
 	}
 
-	fileName, err := getFileName()
+	fileName, err := file.GetName(args, huhTheme)
 
 	if err != nil {
 		fmt.Println("Error getting file name: ", err)
@@ -72,14 +68,14 @@ var addRazorCmd = &cobra.Command{
 
 func addRazorCmdRun(cmd *cobra.Command, args []string) {
 
-	targetDirect, err := getTargetDirect()
+	targetDirect, err := file.PickDir(huhTheme)
 
 	if err != nil {
 		fmt.Println("Error getting direct: ", err)
 		return
 	}
 
-	fileName, err := getFileName()
+	fileName, err := file.GetName(args, huhTheme)
 
 	if err != nil {
 		fmt.Println("Error getting file name: ", err)
@@ -103,14 +99,14 @@ var addCodeCmd = &cobra.Command{
 
 func addCodeCmdRun(cmd *cobra.Command, args []string) {
 
-	targetDirect, err := getTargetDirect()
+	targetDirect, err := file.PickDir(huhTheme)
 
 	if err != nil {
 		fmt.Println("Error getting direct: ", err)
 		return
 	}
 
-	fileName, err := getFileName()
+	fileName, err := file.GetName(args, huhTheme)
 
 	if err != nil {
 		fmt.Println("Error getting file name: ", err)
@@ -134,7 +130,7 @@ var addPageCmd = &cobra.Command{
 
 func addPageCmdRun(cmd *cobra.Command, args []string) {
 
-	targetDirect, err := getTargetDirect()
+	targetDirect, err := file.PickDir(huhTheme)
 
 	if err != nil {
 		fmt.Println("Error getting direct: ", err)
@@ -157,7 +153,7 @@ var addEditorConfigCmd = &cobra.Command{
 }
 
 func addEditorConfigCmdRun(cmd *cobra.Command, args []string) {
-	targetDirect, err := getTargetDirect()
+	targetDirect, err := file.PickDir(huhTheme)
 
 	if err != nil {
 		fmt.Println("Error getting direct: ", err)
@@ -170,122 +166,4 @@ func addEditorConfigCmdRun(cmd *cobra.Command, args []string) {
 		fmt.Println("Error generating .editorconfig file: ", err)
 		return
 	}
-}
-
-//------------------------------------------------------------
-
-func getTargetDirect() (targetDirect string, err error) {
-	currentDir, err := os.Getwd()
-
-	if err != nil {
-		return "", errors.New("Error getting current directory " + err.Error())
-	}
-
-	dir := currentDir
-
-	for {
-		fmt.Println("Directory: ", dir)
-
-		items, err := os.ReadDir(dir)
-
-		if err != nil {
-			return "", errors.New("Error reading directory " + err.Error())
-		}
-
-		var entryNames []string
-		for _, v := range items {
-			if v.IsDir() {
-				entryNames = append(entryNames, v.Name())
-			}
-
-		}
-		entryOptions := make([]huh.Option[string], len(entryNames))
-
-		for i, v := range entryNames {
-			entryOptions[i] = huh.NewOption(v, v)
-		}
-
-		baseDir := filepath.Base(dir)
-
-		var huhOptions []huh.Option[string]
-
-		if baseDir == "" || baseDir == "/" || baseDir == "\\" {
-			huhOptions = append(huh.NewOptions("<current directory>", "<mkdir>"), entryOptions...)
-		} else {
-			huhOptions = append(huh.NewOptions("<current directory>", "<mkdir>", "../"), entryOptions...)
-		}
-
-		var result string
-
-		err = huh.NewSelect[string]().
-			Title("Select File Path").
-			Options(huhOptions...).
-			Value(&result).
-			WithTheme(hunTheme).
-			Run()
-
-		if err != nil {
-			return "", errors.New("Error getting directory name " + err.Error())
-		}
-
-		println("Result: ", result)
-
-		if result == "<current directory>" {
-			return dir, nil
-		} else if result == "../" {
-			dir = filepath.Dir(dir)
-		} else if result == "<mkdir>" {
-			var newDir string
-
-			err := huh.NewInput().
-				Title("New Directory Name").
-				Value(&newDir).
-				WithTheme(hunTheme).
-				Run()
-
-			if err != nil {
-				return "", errors.New("Error getting new directory name " + err.Error())
-			}
-
-			dir = filepath.Join(dir, newDir)
-
-			err = os.Mkdir(dir, 0755)
-
-			if err != nil {
-				return "", errors.New("Error creating directory " + err.Error())
-			}
-		} else if result == "<exit>" {
-			return "", errors.New("user exited")
-		} else {
-			dir = filepath.Join(dir, result)
-		}
-	}
-}
-
-func getFileName() (fileName string, err error) {
-
-	var _fileName string
-	// get file name with huh prompt
-	{
-		for _fileName == "" {
-
-			err := huh.NewInput().
-				Title("File Name").
-				Value(&_fileName).
-				WithTheme(hunTheme).
-				Run()
-
-			if err != nil {
-				return "", errors.New("Error getting file name " + err.Error())
-			}
-
-			_fileName = strings.TrimSpace(_fileName)
-
-			if _fileName == "" {
-				fmt.Println("File name cannot be empty")
-			}
-		}
-	}
-
-	return _fileName, nil
 }
