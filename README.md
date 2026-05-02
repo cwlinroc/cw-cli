@@ -8,6 +8,14 @@ A personal CLI toolkit for scaffolding files, converting encodings, and saving s
 go build -o cw
 ```
 
+## Development
+
+```sh
+golangci-lint run
+go test ./...
+go build ./...
+```
+
 ## Commands
 
 | Command                     | Description                                                        |
