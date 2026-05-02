@@ -54,6 +54,19 @@ internal/
 
 **Global theme:** `huhTheme` in `cmd/root.go` (not `hunTheme`).
 
+## Documentation
+
+```
+README.md                     project overview, quick-start, command table
+docs/
+  add.md                      add subcommands with output templates
+  touch.md                    touch subcommands and add-vs-touch comparison
+  bsf.md                      Unicode escape converter usage and examples
+  lf.md                       lf/crlf line-ending converter
+  utf8.md                     UTF-8 converter with BOM and Big5 details
+  ss.md                       screenshot command argument matrix
+```
+
 ## Smoke Tests
 
 ```
