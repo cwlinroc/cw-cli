@@ -115,3 +115,23 @@ cw add editorconfig
 - CRLF line endings globally; Markdown preserves trailing whitespace
 - C# file-scoped namespaces, system directives sorted first, unused-using warnings
 
+---
+
+### `add gitignore`
+
+Creates a `.gitignore` file.
+
+```sh
+cw add gitignore [flags]
+# prompts: pick directory → writes .gitignore
+```
+
+If flags are provided, the CLI will write the customized gitignore immediately. If no flags are provided, the interactive directory picker is followed by an interactive checklist menu (`huh.MultiSelect`) allowing you to combine ignore rules for any of the supported ecosystems:
+
+- `.NET`
+- `Go`
+- `Java`
+- `JS/TS` (npm/pnpm/yarn)
+- `Python`
+
+

@@ -38,6 +38,9 @@ cw add cs
 # scaffold a Razor page in the current directory
 cw touch razor Index
 
+# scaffold a customized .gitignore for .NET and Go
+cw touch gitignore --net --go
+
 # convert all source files to LF line endings
 cw lf -a
 

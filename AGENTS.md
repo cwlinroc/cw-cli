@@ -36,6 +36,8 @@ internal/
     code.go                   VS Code workspace generation
     page.go                   Svelte +page.svelte generation
     editorConfig.go           .editorconfig generation
+    gitignore.go              .gitignore file generation
+    gitignore_test.go         Unit tests for .gitignore generation
 docs/
   *.md                        Command docs
 ```
@@ -66,16 +68,17 @@ gofmt -w main.go cmd/*.go internal/**/*.go
 
 Current state:
 
-- There are no `_test.go` files yet.
-- `go test ./...` passes because there are no tests to run.
+- There are now several `_test.go` files under `internal/template/`.
+- `go test ./...` runs all these template verification tests.
 
-When tests are added, use these patterns:
+When tests are added or executed, use these patterns:
 
 ```bash
 go test ./...
 go test ./cmd
 go test ./internal/template
 go test ./internal/template -run '^TestGenerateCs$' -count=1
+go test ./internal/template -run '^TestGenerateGitignore$' -count=1
 go test ./cmd -run '^TestTouchCsCmdRun$' -count=1
 ```
 
@@ -92,7 +95,9 @@ go run . touch razor Index
 go run . touch code app
 go run . touch page
 go run . touch editorconfig
+go run . touch gitignore --net --go
 go run . add cs
+go run . add gitignore
 go run . clean
 go run . utf8 --help
 go run . lf --help

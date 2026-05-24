@@ -49,6 +49,32 @@ cw touch editorconfig
 # → writes .editorconfig in cwd
 ```
 
+---
+
+### `touch gitignore`
+
+```sh
+cw touch gitignore [flags]
+# → writes .gitignore in cwd
+```
+
+Supports selective ecosystem ignore rules via flags. If no flags are provided, all supported languages are included.
+
+**Supported languages & flags:**
+- `.NET`: `--net`, `--dotnet`
+- `Go`: `--go`, `--golang`
+- `Java`: `--java`
+- `JS/TS` (npm/pnpm/yarn): `--js`, `--ts`, `--node`, `--npm`, `--pnpm`
+- `Python`: `--py`, `--python`
+
+Example:
+```sh
+cw touch gitignore --go --py
+# → writes a .gitignore only including Go and Python ignore patterns
+```
+
+---
+
 ## Comparison: add vs touch
 
 |           | `add`                                 | `touch`                          |
