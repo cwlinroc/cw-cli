@@ -20,6 +20,7 @@ func init() {
 	addCmd.AddCommand(addCodeCmd)
 	addCmd.AddCommand(addPageCmd)
 	addCmd.AddCommand(addEditorConfigCmd)
+	addCmd.AddCommand(addClaudeCmd)
 	addCmd.AddCommand(addGitignoreCmd)
 
 	addGitignoreCmd.Flags().BoolVar(&addGitignoreNet, "net", false, "Include .NET ignore rules")
@@ -163,6 +164,27 @@ func addEditorConfigCmdRun(cmd *cobra.Command, args []string) {
 	err = template.GenerateEditorConfig(targetDirect)
 	if err != nil {
 		fmt.Println("Error generating .editorconfig file: ", err)
+		return
+	}
+}
+
+var addClaudeCmd = &cobra.Command{
+	Use:   "claude",
+	Short: "Add a new CLAUDE.md file under current directory",
+	Long:  `Add a new CLAUDE.md file under current directory. For example: cw add claude`,
+	Run:   addClaudeCmdRun,
+}
+
+func addClaudeCmdRun(cmd *cobra.Command, args []string) {
+	targetDirect, err := file.PickDir(huhTheme)
+	if err != nil {
+		fmt.Println("Error getting direct: ", err)
+		return
+	}
+
+	err = template.GenerateClaude(targetDirect)
+	if err != nil {
+		fmt.Println("Error generating CLAUDE.md file: ", err)
 		return
 	}
 }

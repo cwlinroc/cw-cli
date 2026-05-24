@@ -21,6 +21,7 @@ func init() {
 	touchCmd.AddCommand(touchCodeCmd)
 	touchCmd.AddCommand(touchPageCmd)
 	touchCmd.AddCommand(touchEditorConfigCmd)
+	touchCmd.AddCommand(touchClaudeCmd)
 	touchCmd.AddCommand(touchGitignoreCmd)
 
 	touchGitignoreCmd.Flags().BoolVar(&touchGitignoreNet, "net", false, "Include .NET ignore rules")
@@ -166,6 +167,27 @@ func touchEditorConfigCmdRun(cmd *cobra.Command, args []string) {
 	err = template.GenerateEditorConfig(targetDirect)
 	if err != nil {
 		fmt.Println("Error generating editorconfig: ", err)
+		return
+	}
+}
+
+var touchClaudeCmd = &cobra.Command{
+	Use:   "claude",
+	Short: "Add a new CLAUDE.md file under current directory",
+	Long:  `Add a new CLAUDE.md file under current directory. For example: cw touch claude`,
+	Run:   touchClaudeCmdRun,
+}
+
+func touchClaudeCmdRun(cmd *cobra.Command, args []string) {
+	targetDirect, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error getting direct: ", err)
+		return
+	}
+
+	err = template.GenerateClaude(targetDirect)
+	if err != nil {
+		fmt.Println("Error generating CLAUDE.md file: ", err)
 		return
 	}
 }

@@ -36,6 +36,8 @@ internal/
     code.go                   VS Code workspace generation
     page.go                   Svelte +page.svelte generation
     editorConfig.go           .editorconfig generation
+    claude.go                 CLAUDE.md generation
+    claude_test.go            Unit tests for CLAUDE.md generation
     gitignore.go              .gitignore file generation
     gitignore_test.go         Unit tests for .gitignore generation
 docs/
@@ -96,8 +98,10 @@ go run . touch code app
 go run . touch page
 go run . touch editorconfig
 go run . touch gitignore --net --go
+go run . touch claude
 go run . add cs
 go run . add gitignore
+go run . add claude
 go run . clean
 go run . utf8 --help
 go run . lf --help
