@@ -26,6 +26,7 @@ go build ./...
 | [`lf` / `crlf`](docs/lf.md) | Convert line endings on a file or an entire directory tree         |
 | [`utf8`](docs/utf8.md)      | Convert files to UTF-8, stripping BOM or re-encoding from Big5     |
 | [`ss`](docs/ss.md)          | Save a clipboard image to a PNG or BMP file _(Windows/macOS only)_ |
+| [`path`](docs/path.md)      | Copy the current directory path to the clipboard _(Windows/macOS only)_ |
 | [`timer`](docs/timer.md)    | Display a live countdown timer in the terminal                     |
 
 ## Quick start

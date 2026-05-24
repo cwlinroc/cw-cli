@@ -23,6 +23,7 @@ cmd/
   lf.go                       LF/CRLF conversion utilities
   utf8.go                     UTF-8 conversion utilities
   ss.go                       Clipboard screenshot save command (!linux only)
+  path.go                     Clipboard path copy command (!linux only)
   timer.go                    Countdown timer with live TUI (bubbletea + bubbles/timer)
 internal/
   file/
