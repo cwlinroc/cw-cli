@@ -29,8 +29,11 @@ func TestGenerateGitignore(t *testing.T) {
 		}
 		content := string(contentBytes)
 
-		// Verify headers/sections for each language exist
+		// Verify headers/sections exist
 		expectedSections := []string{
+			"Universal",
+			"docs/draft/",
+			"settings.local.json",
 			"Dotnet",
 			"Go",
 			"Java",
@@ -68,6 +71,17 @@ func TestGenerateGitignore(t *testing.T) {
 		}
 		if !strings.Contains(content, "Python") {
 			t.Error("expected Python section to be present")
+		}
+
+		// Verify universal patterns are present
+		if !strings.Contains(content, "Universal") {
+			t.Error("expected Universal section to be present")
+		}
+		if !strings.Contains(content, "docs/draft/") {
+			t.Error("expected docs/draft/ pattern to be present")
+		}
+		if !strings.Contains(content, "settings.local.json") {
+			t.Error("expected settings.local.json pattern to be present")
 		}
 
 		// Verify unselected languages are absent
