@@ -18,16 +18,17 @@ go build ./...
 
 ## Commands
 
-| Command                     | Description                                                        |
-| --------------------------- | ------------------------------------------------------------------ |
-| [`add`](docs/add.md)        | Interactively pick a directory, then scaffold a file               |
-| [`touch`](docs/touch.md)    | Scaffold a file in the current working directory                   |
-| [`bsf`](docs/bsf.md)        | Convert between Unicode escape sequences and UTF-8 characters      |
-| [`lf` / `crlf`](docs/lf.md) | Convert line endings on a file or an entire directory tree         |
-| [`utf8`](docs/utf8.md)      | Convert files to UTF-8, stripping BOM or re-encoding from Big5     |
-| [`ss`](docs/ss.md)          | Save a clipboard image to a PNG or BMP file _(Windows/macOS only)_ |
-| [`path`](docs/path.md)      | Copy the current directory path to the clipboard _(Windows/macOS only)_ |
-| [`timer`](docs/timer.md)    | Display a live countdown timer in the terminal                     |
+| Command                              | Description                                                               |
+| ------------------------------------ | ------------------------------------------------------------------------- |
+| [`add`](docs/add.md)                 | Interactively pick a directory, then scaffold a file                      |
+| [`touch`](docs/touch.md)             | Scaffold a file in the current working directory                          |
+| [`bsf`](docs/bsf.md)                 | Convert between Unicode escape sequences and UTF-8 characters             |
+| [`lf` / `crlf`](docs/lf.md)          | Convert line endings on a file or an entire directory tree                |
+| [`utf8`](docs/utf8.md)               | Convert files to UTF-8, stripping BOM or re-encoding from Big5            |
+| [`utf8-bom`](docs/utf8-bom.md)       | Convert files to UTF-8 with BOM, re-encoding from Big5 when needed        |
+| [`ss`](docs/ss.md)                   | Save a clipboard image to a PNG or BMP file _(Windows/macOS only)_        |
+| [`path`](docs/path.md)               | Copy the current directory path to the clipboard _(Windows/macOS only)_   |
+| [`timer`](docs/timer.md)             | Display a live countdown timer in the terminal                            |
 
 ## Quick start
 
@@ -46,6 +47,9 @@ cw lf -a
 
 # convert a file to UTF-8
 cw utf8 legacy.txt
+
+# convert a file to UTF-8 with BOM
+cw utf8-bom legacy.txt
 
 # save clipboard screenshot
 cw ss

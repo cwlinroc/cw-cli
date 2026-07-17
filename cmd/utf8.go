@@ -16,9 +16,11 @@ import (
 
 func init() {
 	rootCmd.AddCommand(utf8Cmd)
+	rootCmd.AddCommand(utf8BOMCmd)
 
 	utf8Cmd.Flags().BoolP("all", "a", false, "Convert all files in the current directory to UTF-8")
 	utf8Cmd.Flags().BoolP("accept-bom", "b", false, "Accept UTF-8 with BOM")
+	utf8BOMCmd.Flags().BoolP("all", "a", false, "Convert all files in the current directory to UTF-8 with BOM")
 }
 
 var utf8Cmd = &cobra.Command{
@@ -29,16 +31,47 @@ var utf8Cmd = &cobra.Command{
 	Run:   utf8CmdRun,
 }
 
-func utf8CmdRun(cmd *cobra.Command, args []string) {
-	all, err := cmd.Flags().GetBool("all")
-	if err != nil {
-		fmt.Println("Error getting all flag: ", err)
-		return
-	}
+var utf8BOMCmd = &cobra.Command{
+	Use:   "utf8-bom",
+	Short: "Convert a file to UTF-8 with BOM",
+	Long:  `Convert a file to UTF-8 with BOM. For example: cw utf8-bom file.txt`,
+	Args:  cobra.RangeArgs(0, 1),
+	Run:   utf8BOMCmdRun,
+}
 
+type bomPolicy int
+
+const (
+	removeBOM bomPolicy = iota
+	preserveBOM
+	addBOM
+)
+
+var utf8BOM = []byte{0xEF, 0xBB, 0xBF}
+
+func utf8CmdRun(cmd *cobra.Command, args []string) {
 	acceptBOM, err := cmd.Flags().GetBool("accept-bom")
 	if err != nil {
 		fmt.Println("Error getting accept-bom flag: ", err)
+		return
+	}
+
+	policy := removeBOM
+	if acceptBOM {
+		policy = preserveBOM
+	}
+
+	runUTF8Cmd(cmd, args, policy, "UTF-8")
+}
+
+func utf8BOMCmdRun(cmd *cobra.Command, args []string) {
+	runUTF8Cmd(cmd, args, addBOM, "UTF-8 with BOM")
+}
+
+func runUTF8Cmd(cmd *cobra.Command, args []string, policy bomPolicy, encoding string) {
+	all, err := cmd.Flags().GetBool("all")
+	if err != nil {
+		fmt.Println("Error getting all flag: ", err)
 		return
 	}
 
@@ -49,8 +82,8 @@ func utf8CmdRun(cmd *cobra.Command, args []string) {
 
 	if all {
 		err = spinner.New().
-			Title("Converting all files to UTF-8").
-			Action(func() { convertAllFilesEncoding(acceptBOM) }).
+			Title("Converting all files to " + encoding).
+			Action(func() { convertAllFilesEncoding(policy, encoding) }).
 			Run()
 		if err != nil {
 			fmt.Println("Error running spinner: ", err)
@@ -61,15 +94,15 @@ func utf8CmdRun(cmd *cobra.Command, args []string) {
 
 	path := args[0]
 
-	err = convertEncoding(path, true, acceptBOM)
+	err = convertEncoding(path, true, policy)
 	if err != nil {
 		fmt.Println("Error converting encoding: ", err)
 		return
 	}
 }
 
-func convertAllFilesEncoding(acceptBOM bool) {
-	fmt.Println("Converting all files in the current directory to UTF-8")
+func convertAllFilesEncoding(policy bomPolicy, encoding string) {
+	fmt.Println("Converting all files in the current directory to " + encoding)
 
 	files, err := getAllProgramFiles()
 	if err != nil {
@@ -78,7 +111,7 @@ func convertAllFilesEncoding(acceptBOM bool) {
 	}
 
 	for _, file := range files {
-		err := convertEncoding(file, false, acceptBOM)
+		err := convertEncoding(file, false, policy)
 		if err != nil {
 			fmt.Println("Error converting encoding: ", err)
 			return
@@ -86,25 +119,24 @@ func convertAllFilesEncoding(acceptBOM bool) {
 	}
 }
 
-func convertEncoding(path string, verbose bool, acceptBOM bool) error {
+func convertEncoding(path string, verbose bool, policy bomPolicy) error {
 	content, err := os.ReadFile(path)
 	if err != nil {
 		fmt.Println("Error reading file: ", err)
 		return err
 	}
 
-	utf8withBom := len(content) >= 3 &&
-		content[0] == 0xEF &&
-		content[1] == 0xBB &&
-		content[2] == 0xBF
+	utf8withBom := len(content) >= len(utf8BOM) &&
+		content[0] == utf8BOM[0] &&
+		content[1] == utf8BOM[1] &&
+		content[2] == utf8BOM[2]
 
 	if utf8withBom {
-
-		if acceptBOM {
+		if policy != removeBOM {
 			return nil
 		}
 
-		content = content[3:]
+		content = content[len(utf8BOM):]
 		err := os.WriteFile(path, content, 0o644)
 		if err != nil {
 			fmt.Println("Convert UTF-8 with BOM failed. Error writing file: ", err)
@@ -117,6 +149,17 @@ func convertEncoding(path string, verbose bool, acceptBOM bool) error {
 	}
 
 	if utf8.Valid(content) {
+		if policy == addBOM {
+			content = append(append([]byte{}, utf8BOM...), content...)
+			if err := os.WriteFile(path, content, 0o644); err != nil {
+				fmt.Println("Convert to UTF-8 with BOM failed. Error writing file: ", err)
+				return err
+			}
+
+			fmt.Println(path + " converted to UTF-8 with BOM")
+			return nil
+		}
+
 		if verbose {
 			fmt.Println(path + " is UTF-8")
 		}
@@ -128,14 +171,18 @@ func convertEncoding(path string, verbose bool, acceptBOM bool) error {
 	encoderPairs := []encoderPair{{big5Encoder, "Big5"}}
 
 	for _, pair := range encoderPairs {
-		exactEncode, err := convertToUTF8(path, content, pair.encoder)
+		exactEncode, err := convertToUTF8(path, content, pair.encoder, policy == addBOM)
 		if err != nil {
 			fmt.Println("Error converting to UTF-8: ", err)
 			return err
 		}
 
 		if exactEncode {
-			fmt.Println(path + " converted to UTF-8 from " + pair.encoding)
+			encoding := "UTF-8"
+			if policy == addBOM {
+				encoding = "UTF-8 with BOM"
+			}
+			fmt.Println(path + " converted to " + encoding + " from " + pair.encoding)
 			return nil
 		}
 	}
@@ -148,10 +195,13 @@ type encoderPair struct {
 	encoding string
 }
 
-func convertToUTF8(path string, content []byte, decoder transform.Transformer) (bool, error) {
+func convertToUTF8(path string, content []byte, decoder transform.Transformer, withBOM bool) (bool, error) {
 	utf8Content, _, err := transform.Bytes(decoder, content)
 	if err != nil {
 		return false, nil
+	}
+	if withBOM {
+		utf8Content = append(append([]byte{}, utf8BOM...), utf8Content...)
 	}
 
 	err = os.WriteFile(path, utf8Content, 0o644)
